@@ -1,4 +1,85 @@
 {
-  "url_scanned": "",
-  "vulnerabilities": []
+  "url_scanned": "http://timhieuphapluat.haiduong.gov.vn/",
+  "vulnerabilities": [
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "SQL Injection"
+    },
+    {
+      "url": "http://timhieuphapluat.haiduong.gov.vn/",
+      "vuln_type": "Cross Site Scripting"
+    }
+  ]
 }

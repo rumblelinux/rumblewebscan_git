@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import re
 import sys
-
+import threading
 # from Antidetect import *
 
 
@@ -32,18 +32,32 @@ def scan_website(url):
             results.append({'url': u, 'vuln': 'Local File Inclusion'})
             
     return results
-        
+
+# Cache results 
+checked_urls = {}
+
 def crawl(url):
-    urls = []
-    response = requests.get(url.replace('https://', 'http://'), verify=False)
+  urls = []
+  
+  def process_url(url):
+    response = requests.get(url)
     parsed = BeautifulSoup(response.text, 'html.parser')
-    
     for link in parsed.find_all('a'):
-        path = link.get('href')
-        if path and path.startswith('/'):
-            path = urljoin(url, path)
-            urls.append(path)
-    return urls
+      path = link.get('href')  
+      if path and path.startswith('/'):
+        urls.append(urljoin(url, path))
+
+  threads = []
+  for i in range(10): 
+    t = threading.Thread(target=process_url, args=(url,))
+    t.start()
+    threads.append(t)
+
+  for t in threads:
+    t.join()
+
+  return urls
+
 
 # Hàm kiểm tra SQL injection
 def check_sqli(url, response):
@@ -65,21 +79,48 @@ def check_sqli(url, response):
 
     if payload_resp.status_code != orig_status:
       print("Different status code")
-      
+      return True
+
     if payload_resp.headers != orig_headers:
       print("Different headers")
-      
+      return True
+    
     if payload_resp.text != orig_content:
       print("Different response content")
-
+      return True
+      
     payload_time = payload_resp.elapsed.total_seconds()
     if payload_time - orig_time > 4:
       print("Time delay detected")
-
+      return True
+      
     if "SQL syntax" in payload_resp.text:
       print("Error message detected")
+      return True
 
-  print("SQL injection scan completed")
+    if url in checked_urls:
+      return checked_urls[url]
+
+    results = []
+
+    payloads = ["'", "')--", "'+OR+'1'='1"]
+
+    for payload in payloads:
+      check_url = f"{url}{payload}"
+      response = requests.get(check_url)
+      if response.status_code >= 400:
+        results.append(payload)
+        print("\nFound SQLi by normal way at: ", check_url)
+        return True
+
+    checked_urls[url] = results
+    print("SQL injection scan completed")
+    
+
+  return False
+
+
+  
 
 # -----------------------------------------------------------------------
 # Hàm kiểm tra XSS
@@ -135,7 +176,8 @@ def check_xss(url, response):
         data[input.get('name')] = payload
         response = session.post(url + form['action'], data=data)
         if payload in response.text:
-          print('\nChecking XSS in:', url + form['action'])
+          print('\nFound when checking XSS in:', url + form['action'])
+          return True
 
   # Check URL parameters
   params = re.findall(r'([^?=&]+)=([^&]*)', url)
@@ -144,21 +186,24 @@ def check_xss(url, response):
       url = url.replace(f'{name}={value}', f'{name}={payload}')
       response = session.get(url)
       if payload in response.text:
-        print('\nChecking XSS in:', url)
+        print('\nFound when checking XSS in:', url)
+        return True
 
   for encoded_payload in encoded_payloads:
     url = f"{url}?q={encoded_payload}"
     response = requests.get(url)
     
     if encoded_payload in response.text:
-      print("\nTrying bypass filter with encoded payload: ", url)
+      print("\nFound when trying bypass filter with encoded payload: ", url)
+      return True
 
     normal_payload = "<script>alert(1)</script>"
     url = f"{url}?q={normal_payload}"
     response = requests.get(url)
 
     if normal_payload not in response.text:
-      print("\nChecking site filters special characters from URL: ", url)
+      print("\nFound when checking site filters special characters from URL: ", url)
+      return True
 
 
   return False
