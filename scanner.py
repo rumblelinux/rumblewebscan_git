@@ -61,60 +61,27 @@ def crawl(url):
 
 # Hàm kiểm tra SQL injection
 def check_sqli(url, response):
-  orig_resp = requests.get(url)
-  orig_status = orig_resp.status_code
-  orig_headers = orig_resp.headers
-  orig_content = orig_resp.text
-  orig_time = orig_resp.elapsed.total_seconds()
-
+  
   test_urls = [
     f"{url}' OR '1'='1", 
     f"{url}' AND '1'='2",
     f"{url}'; SELECT SLEEP(5); -- "
   ]
 
-  for test_url in test_urls:
-    print(url)
-    payload_resp = requests.get(test_url)
+  results = []
 
-    if payload_resp.status_code != orig_status:
-      print("Different status code")
+  payloads = ["'", "')--", "'+OR+'1'='1"]
+
+  for payload in payloads:
+    check_url = f"{url}{payload}"
+    response = requests.get(check_url)
+    if response.status_code >= 400:
+      results.append(payload)
+      print("\nFound SQLi by normal way at: ", check_url)
       return True
 
-    if payload_resp.headers != orig_headers:
-      print("Different headers")
-      return True
-    
-    if payload_resp.text != orig_content:
-      print("Different response content")
-      return True
-      
-    payload_time = payload_resp.elapsed.total_seconds()
-    if payload_time - orig_time > 4:
-      print("Time delay detected")
-      return True
-      
-    if "SQL syntax" in payload_resp.text:
-      print("Error message detected")
-      return True
-
-    if url in checked_urls:
-      return checked_urls[url]
-
-    results = []
-
-    payloads = ["'", "')--", "'+OR+'1'='1"]
-
-    for payload in payloads:
-      check_url = f"{url}{payload}"
-      response = requests.get(check_url)
-      if response.status_code >= 400:
-        results.append(payload)
-        print("\nFound SQLi by normal way at: ", check_url)
-        return True
-
-    checked_urls[url] = results
-    print("SQL injection scan completed")
+  checked_urls[url] = results
+  print("SQL injection scan completed")
     
 
   return False
