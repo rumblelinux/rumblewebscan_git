@@ -1,5 +1,6 @@
 {
-    "target": "http://testphp.vulnweb.com/guestbook.php",
+    "target": "http://testphp.vulnweb.com/index.php",
     "SQLi vulnerabilities": false,
-    "XSS vulnerabilities": true
+    "XSS vulnerabilities": true,
+    "LFI vulnerabilities": false
 }

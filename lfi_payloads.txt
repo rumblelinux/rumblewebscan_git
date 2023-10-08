@@ -1,0 +1,265 @@
+/etc/php.ini
+/bin/php.ini
+/etc/httpd/php.ini
+/usr/lib/php.ini
+/usr/lib/php/php.ini
+/usr/local/etc/php.ini
+/usr/local/lib/php.ini
+/usr/local/php/lib/php.ini
+/usr/local/php4/lib/php.ini
+/usr/local/php5/lib/php.ini
+/usr/local/apache/conf/php.ini
+/etc/php4.4/fcgi/php.ini
+/etc/php4/apache/php.ini
+/etc/php4/apache2/php.ini
+/etc/php5/apache/php.ini
+/etc/php5/apache2/php.ini
+/etc/php/php.ini
+/etc/php/php4/php.ini
+/etc/php/apache/php.ini
+/etc/php/apache2/php.ini
+/web/conf/php.ini
+/usr/local/Zend/etc/php.ini
+/opt/xampp/etc/php.ini
+/var/local/www/conf/php.ini
+/etc/php/cgi/php.ini
+/etc/php4/cgi/php.ini
+/etc/php5/cgi/php.ini
+/home2/bin/stable/apache/php.ini
+/home/bin/stable/apache/php.ini
+/etc/httpd/conf.d/php.conf
+/php5/php.ini
+/php4/php.ini
+/php/php.ini
+/PHP/php.ini
+/WINDOWS/php.ini
+/WINNT/php.ini
+/apache/php/php.ini
+/xampp/apache/bin/php.ini
+/NetServer/bin/stable/apache/php.ini
+/etc/passwd
+/etc/mono/1.0/machine.config
+/etc/mono/2.0/machine.config
+/etc/mono/2.0/web.config
+/etc/mono/config
+/usr/local/cpanel/logs/stats_log
+/usr/local/cpanel/logs/access_log
+/usr/local/cpanel/logs/error_log
+/usr/local/cpanel/logs/license_log
+/usr/local/cpanel/logs/login_log
+/var/cpanel/cpanel.config
+/var/log/sw-cp-server/error_log
+/usr/local/psa/admin/logs/httpsd_access_log
+/usr/local/psa/admin/logs/panel.log
+/var/log/sso/sso.log
+/usr/local/psa/admin/conf/php.ini
+/etc/sw-cp-server/applications.d/plesk.conf
+/usr/local/psa/admin/conf/site_isolation_settings.ini
+/usr/local/sb/config
+/etc/sw-cp-server/applications.d/00-sso-cpserver.conf
+/etc/sso/sso_config.ini
+/etc/mysql/conf.d/old_passwords.cnf
+/var/log/mysql/mysql-bin.log
+/var/log/mysql/mysql-bin.index
+/var/log/mysql/data/mysql-bin.index
+/var/log/mysql.log
+/var/log/mysql.err
+/var/log/mysqlderror.log
+/var/log/mysql/mysql.log
+/var/log/mysql/mysql-slow.log
+/var/log/mysql-bin.index
+/var/log/data/mysql-bin.index
+/var/mysql.log
+/var/mysql-bin.index
+/var/data/mysql-bin.index
+/Program Files/MySQL/MySQL Server 5.0/data/{HOST}.err
+/Program Files/MySQL/MySQL Server 5.0/data/mysql.log
+/Program Files/MySQL/MySQL Server 5.0/data/mysql.err
+/Program Files/MySQL/MySQL Server 5.0/data/mysql-bin.log
+/Program Files/MySQL/MySQL Server 5.0/data/mysql-bin.index
+/Program Files/MySQL/data/{HOST}.err
+/Program Files/MySQL/data/mysql.log
+/Program Files/MySQL/data/mysql.err
+/Program Files/MySQL/data/mysql-bin.log
+/Program Files/MySQL/data/mysql-bin.index
+/MySQL/data/{HOST}.err
+/MySQL/data/mysql.log
+/MySQL/data/mysql.err
+/MySQL/data/mysql-bin.log
+/MySQL/data/mysql-bin.index
+/usr/local/mysql/data/mysql.log
+/usr/local/mysql/data/mysql.err
+/usr/local/mysql/data/mysql-bin.log
+/usr/local/mysql/data/mysql-slow.log
+/usr/local/mysql/data/mysqlderror.log
+/usr/local/mysql/data/{HOST}.err
+/usr/local/mysql/data/mysql-bin.index
+/var/lib/mysql/my.cnf
+/etc/mysql/my.cnf
+/etc/my.cnf
+/Program Files/MySQL/MySQL Server 5.0/my.ini
+/Program Files/MySQL/MySQL Server 5.0/my.cnf
+/Program Files/MySQL/my.ini
+/Program Files/MySQL/my.cnf
+/MySQL/my.ini
+/MySQL/my.cnf
+/mysql/bin/my.ini
+/var/postgresql/log/postgresql.log
+/var/log/postgresql/postgresql.log
+/var/log/postgres/pg_backup.log
+/var/log/postgres/postgres.log
+/var/log/postgresql.log
+/var/log/pgsql/pgsql.log
+/var/log/postgresql/postgresql-8.1-main.log
+/var/log/postgresql/postgresql-8.3-main.log
+/var/log/postgresql/postgresql-8.4-main.log
+/var/log/postgresql/postgresql-9.0-main.log
+/var/log/postgresql/postgresql-9.1-main.log
+/var/log/pgsql8.log
+/var/log/postgresql/postgres.log
+/var/log/pgsql_log
+/var/log/postgresql/main.log
+/var/log/cron/var/log/postgres.log
+/usr/internet/pgsql/data/postmaster.log
+/usr/local/pgsql/data/postgresql.log
+/usr/local/pgsql/data/pg_log
+/var/lib/pgsql/data/postgresql.conf
+/var/postgresql/db/postgresql.conf
+/var/nm2/postgresql.conf
+/usr/local/pgsql/data/postgresql.conf
+/usr/local/pgsql/data/pg_hba.conf
+/usr/internet/pgsql/data/pg_hba.conf
+/usr/local/pgsql/data/passwd
+/usr/local/pgsql/bin/pg_passwd
+/etc/postgresql/postgresql.conf
+/etc/postgresql/pg_hba.conf
+/home/postgres/data/postgresql.conf
+/home/postgres/data/PG_VERSION
+/home/postgres/data/pg_ident.conf
+/home/postgres/data/pg_hba.conf
+/Program Files/PostgreSQL/8.3/data/pg_hba.conf
+/Program Files/PostgreSQL/8.3/data/pg_ident.conf
+/Program Files/PostgreSQL/8.3/data/postgresql.conf
+/Program Files/PostgreSQL/8.4/data/pg_hba.conf
+/Program Files/PostgreSQL/8.4/data/pg_ident.conf
+/Program Files/PostgreSQL/8.4/data/postgresql.conf
+/Program Files/PostgreSQL/9.0/data/pg_hba.conf
+/Program Files/PostgreSQL/9.0/data/pg_ident.conf
+/Program Files/PostgreSQL/9.0/data/postgresql.conf
+/Program Files/PostgreSQL/9.1/data/pg_hba.conf
+/Program Files/PostgreSQL/9.1/data/pg_ident.conf
+/Program Files/PostgreSQL/9.1/data/postgresql.conf
+/wamp/logs/access.log
+/wamp/logs/apache_error.log
+/wamp/logs/genquery.log
+/wamp/logs/mysql.log
+/wamp/logs/slowquery.log
+/wamp/bin/apache/apache2.2.22/logs/access.log
+/wamp/bin/apache/apache2.2.22/logs/error.log
+/wamp/bin/apache/apache2.2.21/logs/access.log
+/wamp/bin/apache/apache2.2.21/logs/error.log
+/wamp/bin/mysql/mysql5.5.24/data/mysql-bin.index
+/wamp/bin/mysql/mysql5.5.16/data/mysql-bin.index
+/wamp/bin/apache/apache2.2.21/conf/httpd.conf
+/wamp/bin/apache/apache2.2.22/conf/httpd.conf
+/wamp/bin/apache/apache2.2.21/wampserver.conf
+/wamp/bin/apache/apache2.2.22/wampserver.conf
+/wamp/bin/apache/apache2.2.22/conf/wampserver.conf
+/wamp/bin/mysql/mysql5.5.24/my.ini
+/wamp/bin/mysql/mysql5.5.24/wampserver.conf
+/wamp/bin/mysql/mysql5.5.16/my.ini
+/wamp/bin/mysql/mysql5.5.16/wampserver.conf
+/wamp/bin/php/php5.3.8/php.ini
+/wamp/bin/php/php5.4.3/php.ini
+/xampp/apache/logs/access.log
+/xampp/apache/logs/error.log
+/xampp/mysql/data/mysql-bin.index
+/xampp/mysql/data/mysql.err
+/xampp/mysql/data/{HOST}.err
+/xampp/sendmail/sendmail.log
+/xampp/apache/conf/httpd.conf
+/xampp/FileZillaFTP/FileZilla Server.xml
+/xampp/MercuryMail/mercury.ini
+/xampp/php/php.ini
+/xampp/phpMyAdmin/config.inc.php
+/xampp/sendmail/sendmail.ini
+/xampp/webalizer/webalizer.conf
+/opt/lampp/etc/httpd.conf
+/xampp/htdocs/aca.txt
+/xampp/htdocs/admin.php
+/xampp/htdocs/leer.txt
+/usr/local/apache/logs/audit_log
+/usr/local/apache2/logs/audit_log
+/logs/security_debug_log
+/logs/security_log
+/usr/local/apache/conf/modsec.conf
+/usr/local/apache2/conf/modsec.conf
+/WINNT/system32/logfiles/MSFTPSVC
+/WINNT/system32/logfiles/MSFTPSVC1
+/WINNT/system32/logfiles/MSFTPSVC2
+/WINDOWS/system32/logfiles/MSFTPSVC
+/WINDOWS/system32/logfiles/MSFTPSVC1
+/WINDOWS/system32/logfiles/MSFTPSVC2
+/etc/logrotate.d/proftpd
+/www/logs/proftpd.system.log
+/var/log/proftpd
+/var/log/proftpd/xferlog.legacy
+/var/log/proftpd.access_log
+/var/log/proftpd.xferlog
+/etc/pam.d/proftpd
+/etc/proftp.conf
+/etc/protpd/proftpd.conf
+/etc/vhcs2/proftpd/proftpd.conf
+/etc/proftpd/modules.conf
+/var/log/vsftpd.log
+/etc/vsftpd.chroot_list
+/etc/logrotate.d/vsftpd.log
+/etc/vsftpd/vsftpd.conf
+/etc/vsftpd.conf
+/etc/chrootUsers
+/var/log/xferlog
+/var/adm/log/xferlog
+/etc/wu-ftpd/ftpaccess
+/etc/wu-ftpd/ftphosts
+/etc/wu-ftpd/ftpusers
+/var/log/pure-ftpd/pure-ftpd.log
+/logs/pure-ftpd.log
+/var/log/pureftpd.log
+/usr/sbin/pure-config.pl
+/usr/etc/pure-ftpd.conf
+/etc/pure-ftpd/pure-ftpd.conf
+/usr/local/etc/pure-ftpd.conf
+/usr/local/etc/pureftpd.pdb
+/usr/local/pureftpd/etc/pureftpd.pdb
+/usr/local/pureftpd/sbin/pure-config.pl
+/usr/local/pureftpd/etc/pure-ftpd.conf
+/etc/pure-ftpd.conf
+/etc/pure-ftpd/pure-ftpd.pdb
+/etc/pureftpd.pdb
+/etc/pureftpd.passwd
+/etc/pure-ftpd/pureftpd.pdb
+/usr/ports/ftp/pure-ftpd/pure-ftpd.conf
+/usr/ports/ftp/pure-ftpd/pureftpd.pdb
+/usr/ports/ftp/pure-ftpd/pureftpd.passwd
+/usr/ports/net/pure-ftpd/pure-ftpd.conf
+/usr/ports/net/pure-ftpd/pureftpd.pdb
+/usr/ports/net/pure-ftpd/pureftpd.passwd
+/usr/pkgsrc/net/pureftpd/pure-ftpd.conf
+/usr/pkgsrc/net/pureftpd/pureftpd.pdb
+/usr/pkgsrc/net/pureftpd/pureftpd.passwd
+/usr/ports/contrib/pure-ftpd/pure-ftpd.conf
+/usr/ports/contrib/pure-ftpd/pureftpd.pdb
+/usr/ports/contrib/pure-ftpd/pureftpd.passwd
+/var/log/muddleftpd
+/usr/sbin/mudlogd
+/etc/muddleftpd/mudlog
+/etc/muddleftpd.com
+/etc/muddleftpd/mudlogd.conf
+/etc/muddleftpd/muddleftpd.conf
+/var/log/muddleftpd.conf
+/usr/sbin/mudpasswd
+/etc/muddleftpd/muddleftpd.passwd
+/etc/muddleftpd/passwd
+/var/log/ftp-proxy/ftp-proxy.log
+/var/log/ftp-proxy
+/var/log/ftplog
