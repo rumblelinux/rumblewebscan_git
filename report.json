@@ -1,6 +1,0 @@
-{
-    "target": "http://testphp.vulnweb.com/index.php",
-    "SQLi vulnerabilities": false,
-    "XSS vulnerabilities": true,
-    "LFI vulnerabilities": false
-}

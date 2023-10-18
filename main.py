@@ -1,21 +1,26 @@
-import SQLi_scan
-import XSS_scan
-import LFi_scan
+from SQLi_scan import SQli_check
+from XSS_scan import XSS_check
+from LFi_scan import LFI_check
 import sys
 import json
 
 if __name__ == "__main__":
 
   if len(sys.argv) != 2:
-      print("Usage: python main.py <url>")
+      print("Usage: python or python3 main.py <url>")
       sys.exit(1)
 
   url = sys.argv[1]
   print(f"Starting scan on {url}")
+
+  sqli_scanner = SQli_check(url)
+  sqli_result = sqli_scanner.scan_website(url)
   
-  sqli_result = SQLi_scan.check_sqli(url)  
-  xss_result = XSS_scan.check_xss(url)
-  lfi_result = LFi_scan.check_lfi(url)
+  xss_scanner = XSS_check(url)
+  xss_result = xss_scanner.check_xss(url)
+  
+  lfi_scanner = LFI_check(url)
+  lfi_result = lfi_scanner.check_lfi(url)
 
 
   # Save result to file report.json
