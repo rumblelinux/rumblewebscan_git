@@ -31,7 +31,7 @@ class XSS_check:
   # ---------------------------------------------------------------
   #DEF SCAN WEBSITE
   forms = []
-  def scan_website(url):
+  def scan_website(self, url):
     soup = bs(s.get(url).content, "html.parser")
     results = {
       "xss": []
