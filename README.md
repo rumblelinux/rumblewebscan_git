@@ -9,4 +9,4 @@ SETUP:
 
 
 To run my tool:
-    python3 <url you want to check>
+     $ python3 <url you want to check>
