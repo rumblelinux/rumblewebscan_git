@@ -32,11 +32,11 @@ class XSS_check:
   #DEF SCAN WEBSITE
   forms = []
   def scan_website(self, url):
-    soup = bs(s.get(url).content, "html.parser")
+
     results = {
       "xss": []
     }
-    urls = urlparse(url)
+
     global forms
     forms = bs(s.get(url).content, "html.parser").find_all("form")
 
@@ -46,8 +46,8 @@ class XSS_check:
         "url": url,
         "details": "[+] Cross Site Scripting detected"
       })
-
-    return results
+      return True, results
+    return False, results
 
 
 

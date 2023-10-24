@@ -33,11 +33,10 @@ class SQli_check:
   #DEF SCAN WEBSITE
   forms = []
   def scan_website(self, url):
-    soup = bs(s.get(url).content, "html.parser")
     results = {
       "sqli": [] 
     }
-    urls = urlparse(url)
+
     global forms
     forms = bs(s.get(url).content, "html.parser").find_all("form")
 
@@ -47,7 +46,8 @@ class SQli_check:
         "url": url,
         "details": "[+] SQL Injection detected"
       })
-    return results
+      return True, results
+    return False, results
 
   # -----------------------------------------------------
 

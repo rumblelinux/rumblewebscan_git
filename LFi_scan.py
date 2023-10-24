@@ -19,7 +19,7 @@ class LFI_check:
     results = {
       "lif": []
     }
-    urls = urlparse(url)
+
     global forms
     forms = bs(s.get(url).content, "html.parser").find_all("form")
 
@@ -29,8 +29,8 @@ class LFI_check:
         "url": url,
         "details": "[+] Local File Injection detected"
       })
-
-    return results
+      return True, results
+    return False, results
 
   def get_all_forms(self, url):
     soup = bs(s.get(url).content, "html.parser")
