@@ -1,4 +1,0 @@
-{
-    "target": "http://testphp.vulnweb.com/artists.php?artist=1",
-    "IDOR vulnerabilities": false
-}
