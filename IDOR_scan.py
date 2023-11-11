@@ -43,7 +43,7 @@ class IDOR_check:
         html2 = resp2.content
 
         if html1 != html2:
-            return False
+            return True
 
         return False
     
